@@ -39,9 +39,10 @@ method_exchangeImplementations(beforMethod, afterMethod);               \
 
 
 
+
 @interface TopVC ()
 
-@property (nonatomic, strong, readwrite) UIViewController *top;
+@property (weak, readwrite) UIViewController *top;
 
 @end
 
@@ -60,7 +61,20 @@ method_exchangeImplementations(beforMethod, afterMethod);               \
 
 @end
 
-@implementation UIViewController (VCS)
+
+@implementation UIViewController (TopVCSupport)
+
+@dynamic tv_ignoreSelf;
+
+
+- (BOOL)tv_ignoreSelf {
+    id res = objc_getAssociatedObject(self, "tv_ignoreSelf");
+    return res != nil ? [res boolValue] : NO;
+}
+
+- (void)setTv_ignoreSelf:(BOOL)tv_ignoreSelf {
+    objc_setAssociatedObject(self, "tv_ignoreSelf", @(tv_ignoreSelf), OBJC_ASSOCIATION_ASSIGN);
+}
 
 + (void)load {
     @autoreleasepool {
@@ -70,7 +84,9 @@ method_exchangeImplementations(beforMethod, afterMethod);               \
 
 
 - (void)vcs_viewDidAppear:(BOOL)animated {
-    [TopVC shared].top = self;
+    if (self.tv_ignoreSelf == NO) {
+        [TopVC shared].top = self;
+    }
     [self vcs_viewDidAppear:animated];
 }
 @end

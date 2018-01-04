@@ -9,9 +9,18 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+
+@interface UIViewController (TopVCSupport)
+
+@property (nonatomic) BOOL tv_ignoreSelf;   // Defaults to NO.
+
+@end
+
+
+
 @interface TopVC : NSObject
 
-@property (nonatomic, strong, readonly) UIViewController *top;
+@property (weak, readonly) UIViewController *top;
 
 + (instancetype)shared;
 
